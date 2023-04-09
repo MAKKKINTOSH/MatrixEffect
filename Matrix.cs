@@ -6,12 +6,22 @@ using System.Threading.Tasks;
 
 namespace MatrixEffect
 {
-    //Matrix color: 15 - white, 10 light green, 2 - green
     internal class Matrix
     {
+        private List<MatrixSegment> matrix = new List<MatrixSegment>();
+        private AutoResetEvent wait = new AutoResetEvent(true);
+
         public void Start()
         {
+            for (int i = 0; i < Console.BufferWidth; i++)
+            {
+                matrix.Add(new MatrixSegment());
+            }
 
+            foreach (MatrixSegment segment in matrix)
+            {
+                Thread drawThread = new Thread(() => segment.Print(wait));
+            }
         }
     }
 }
