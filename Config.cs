@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace MatrixEffect
 {
-    internal class Config
+    internal static class Config
     {
-        public const int segmentSpeed = 2;
         public const int symbolsInSegment = 10;
         public const int segmentLength = 20;
+
+        public static readonly int[] segmentSleepInterval = { 1000, 10000 };
+        public static readonly int[] symbolSleepInterval = { 5, 400 };
     }
 }

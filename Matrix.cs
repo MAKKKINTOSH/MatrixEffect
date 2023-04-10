@@ -15,14 +15,15 @@ namespace MatrixEffect
         {
             Console.CursorVisible = false;
 
-            for (int i = 0; i < Console.BufferWidth; i++)
+            for (int i = 0; i < Console.WindowWidth; i++)
             {
-                matrix.Add(new MatrixSegment());
+                matrix.Add(new MatrixSegment(i));
             }
 
             foreach (MatrixSegment segment in matrix)
             {
                 Thread drawThread = new Thread(() => segment.Print(wait));
+                drawThread.Start();
             }
         }
     }
