@@ -12,6 +12,7 @@ namespace MatrixEffect
     {
         private int x = /*new Random().Next(0, Console.BufferWidth);*/4;
         private int y = 0;
+        private const int segmentLength = Config.segmentLength;
 
         private Stack<char> segmentSymbols = new Stack<char>();
         
@@ -26,17 +27,13 @@ namespace MatrixEffect
             {
                 while (true)
                 {
-                    if (y >= Console.WindowHeight)
-                    {
-                        segmentSymbols.Pop();
-                    }
-                    else
+                    if (segmentSymbols.Count < Console.WindowHeight)
                     {
                         segmentSymbols.Push(symbols[rand.Next(0, sybolsLength)]);
                     }
                     y++;
 
-                    if (segmentSymbols.Count == 0) break;
+                    if (y > (Console.WindowHeight + segmentLength)) break;
 
                     int count = y;
 
@@ -53,10 +50,12 @@ namespace MatrixEffect
                     }
                     wait.Set();
 
-                    Thread.Sleep(100);
+                    Thread.Sleep(50);
                 }
 
+                
                 y = 0;
+                segmentSymbols.Clear();
                 Thread.Sleep(500);
             }
         }
@@ -68,7 +67,7 @@ namespace MatrixEffect
                  1 => (ConsoleColor)15,
                  2 => (ConsoleColor)7,
                  < 12 => (ConsoleColor)10,
-                 < 19 => (ConsoleColor)2,
+                 < segmentLength => (ConsoleColor)2,
                  _ => (ConsoleColor)0
              };
         }
