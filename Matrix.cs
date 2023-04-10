@@ -13,6 +13,8 @@ namespace MatrixEffect
 
         public void Start()
         {
+            Console.CursorVisible = false;
+
             for (int i = 0; i < Console.BufferWidth; i++)
             {
                 matrix.Add(new MatrixSegment());

@@ -13,7 +13,7 @@ namespace MatrixEffect
         private int x = /*new Random().Next(0, Console.BufferWidth);*/4;
         private int y = 0;
 
-        private Queue<char> segmentSymbols = new Queue<char>();
+        private Stack<char> segmentSymbols = new Stack<char>();
         
         private int sybolsLength = symbols.Length;
 
@@ -24,29 +24,53 @@ namespace MatrixEffect
         {
             while(true)
             {
-                segmentSymbols.Enqueue(symbols[rand.Next(0, sybolsLength)]);
-                int count = y + 1;
-
-                wait.WaitOne();
-                foreach (char symbol in segmentSymbols.Reverse())
+                while (true)
                 {
-                    count--;
-                    if (count >= Console.WindowHeight) continue;
-                    Console.ForegroundColor = (y - count) switch
+                    if (y >= Console.WindowHeight)
                     {
-                        0 => (ConsoleColor)15,
-                        < 12 => (ConsoleColor)10,
-                        < 20 => (ConsoleColor)2,
-                        _ => (ConsoleColor)0
-                    };
-                    Console.SetCursorPosition(x, count);
-                    Console.Write(symbol);
-                }
-                wait.Set();
+                        segmentSymbols.Pop();
+                    }
+                    else
+                    {
+                        segmentSymbols.Push(symbols[rand.Next(0, sybolsLength)]);
+                    }
+                    y++;
 
-                y++;
-                Thread.Sleep(100);
+                    if (segmentSymbols.Count == 0) break;
+
+                    int count = y;
+
+                    wait.WaitOne();
+                    foreach (char symbol in segmentSymbols)
+                    {
+                        count--;
+                        if (count >= Console.WindowHeight) count = Console.WindowHeight - 1;
+
+                        Console.ForegroundColor = MatrixLetterColor(y - count - 1);
+
+                        Console.SetCursorPosition(x, count);
+                        Console.Write(symbol);
+                    }
+                    wait.Set();
+
+                    Thread.Sleep(100);
+                }
+
+                y = 0;
+                Thread.Sleep(500);
             }
+        }
+        private ConsoleColor MatrixLetterColor(int position)
+        {
+             return position switch
+             {
+                 0 => (ConsoleColor)14,
+                 1 => (ConsoleColor)15,
+                 2 => (ConsoleColor)7,
+                 < 12 => (ConsoleColor)10,
+                 < 19 => (ConsoleColor)2,
+                 _ => (ConsoleColor)0
+             };
         }
     }
 }
